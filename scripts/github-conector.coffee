@@ -4,14 +4,18 @@
 # Dependencies:
 #   "redis": "0.8.4"
 #
-# Commands:
+# Configration:
+#   HUBOT_BCRYPT_MASTER_GITHUB
 #
+# Commands:
+#   hubot get token -github <username>/<repositoryname> - respond token
 #
 # Authors:
 #   ArLE
 
 Redis = require "redis"
 Bcrypt = require "bcrypt"
+MKEY = process.env.HUBOT_BCRYPT_MASTER_GITHUB
 
 module.exports = (robot) ->
   robot.respond /bcrypt-gen (.*)$/i, (msg) ->
@@ -44,3 +48,13 @@ module.exports = (robot) ->
     client.set "#{redis_key}", "#{redis_val}", (err, keys_replies) ->
       if err
         throw err
+
+  robot.respond /get token -github (.*)\/(.*)$/i, (msg) ->
+    salt = Bcrypt.genSaltSync(10)
+    gUser = msg.match[1].trim()
+    gRepo = msg.match[2].trim()
+    msg.send 'user name is ' + gUser
+    msg.send 'repository name is ' + gRepo
+    cry_key = MKEY + gUser + gRepo
+    gToken = Bcrypt.hashSync(cry_key, salt)
+    msg.send 'token of ' + gUser + '/' + gRepo + ' is ' gToken
