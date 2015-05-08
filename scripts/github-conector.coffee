@@ -17,6 +17,16 @@ Redis = require "redis"
 Bcrypt = require "bcrypt"
 MKEY = process.env.HUBOT_BCRYPT_MASTER_GITHUB
 
+class GithubConector
+  compare = (repoName) ->
+    result = Bcrypt.compareSync(MKEY+repoName)
+    return result
+
+  getToken: (repoName) ->
+    salt = Bcrypt.genSaltSync(10)
+    gToken = Bcrypt.hashSync(MKEY+repoName, salt)
+    return gToken
+
 module.exports = (robot) ->
   robot.respond /bcrypt-gen (.*)$/i, (msg) ->
     b_key = msg.match[1].trim()
@@ -50,11 +60,7 @@ module.exports = (robot) ->
         throw err
 
   robot.respond /get token -github (.*)\/(.*)$/i, (msg) ->
-    salt = Bcrypt.genSaltSync(10)
     gUser = msg.match[1].trim()
     gRepo = msg.match[2].trim()
-    msg.send 'user name is ' + gUser
-    msg.send 'repository name is ' + gRepo
-    cli_key = MKEY + gUser + gRepo
-    gToken = Bcrypt.hashSync(cli_key, salt)
+    gToken = GithubConector.getToken("#{gUser}/#{gRepo}")
     msg.send "token of #{gUser}/#{gRepo} is #{gToken}"
