@@ -55,6 +55,6 @@ module.exports = (robot) ->
     gRepo = msg.match[2].trim()
     msg.send 'user name is ' + gUser
     msg.send 'repository name is ' + gRepo
-    cry_key = MKEY + gUser + gRepo
-    gToken = Bcrypt.hashSync(cry_key, salt)
-    msg.send 'token of ' + gUser + '/' + gRepo + ' is ' gToken
+    cli_key = MKEY + gUser + gRepo
+    gToken = Bcrypt.hashSync(cli_key, salt)
+    msg.send "token of #{gUser}/#{gRepo} is #{gToken}"
