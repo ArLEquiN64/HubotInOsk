@@ -9,3 +9,6 @@ module.exports = (robot) ->
 
   robot.respond /WHO ARE YOU$/i, (msg) ->
     msg.reply "I am " + robot.name
+
+  robot.hear /hoshinotoon$/i, (msg) ->
+    msg.send "hoshinotoon"
