@@ -28,6 +28,7 @@ class GithubConector
     return gToken
 
 module.exports = (robot) ->
+  gConector = new GithubConector()
   robot.respond /bcrypt-gen (.*)$/i, (msg) ->
     b_key = msg.match[1].trim()
     salt = Bcrypt.genSaltSync(10)
@@ -62,5 +63,5 @@ module.exports = (robot) ->
   robot.respond /get token -github (.*)\/(.*)$/i, (msg) ->
     gUser = msg.match[1].trim()
     gRepo = msg.match[2].trim()
-    gToken = GithubConector.getToken("#{gUser}/#{gRepo}")
+    gToken = gConector.getToken("#{gUser}/#{gRepo}")
     msg.send "token of #{gUser}/#{gRepo} is #{gToken}"
