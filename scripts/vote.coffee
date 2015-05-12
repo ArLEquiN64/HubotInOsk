@@ -1,13 +1,18 @@
 # Description
-#   hubot scripts for diagnosing hubot
+#   hubot ちゃんに投票の司会をしてもらうよ
 #
 # Commands:
-#   hubot vote -s - aa
+#   hubot vote 投票開始 - hubot start vote form
+#   hubot vote <key>の項目を追加 - hubot add key
+#   hubot vote 投票結果 - hubot show key: value
+#   hubot vote 投票終了 - hubot end vote form
 #
 # Author:
 #   ArLE
 
 Redis = require "redis"
+
+class Vote
 
 
 module.exports = (robot) ->
@@ -18,18 +23,20 @@ module.exports = (robot) ->
         throw err
       else if reply
         result = JSON.parse(reply)
-        if result["start"]
+        if result.start
           msg.send "already started"
         else
-          result["start"] = true
+          result.start = true
           client.set "vote", JSON.stringify(result), (err, keys_replies) ->
             if err
               throw err
           msg.send "start \'vote -v <value>\' send"
       else
         send = {
-          "start": true
-          "key": []
+          start: true
+          owner: msg.message.user.name
+          key: []
+          people: {}
         }
         client.set "vote", JSON.stringify(send), (err, keys_replies) ->
           if err
@@ -50,7 +57,7 @@ module.exports = (robot) ->
             throw err
           else if reply
             result = JSON.parse(reply)
-            result["key"].push(buf)
+            result.key.push(buf)
             client.set "vote", JSON.stringify(result), (err, keys_replies) ->
               if err
                 throw err
@@ -68,7 +75,7 @@ module.exports = (robot) ->
         throw err
       else if reply
         result = JSON.parse(reply)
-        for value in result["key"]
+        for value in result.key
           client.get "#{value}", (err, reply2) ->
             if err
               throw err
@@ -82,7 +89,7 @@ module.exports = (robot) ->
   robot.respond /vote -v (.*)/i, (msg) ->
     client = Redis.createClient()
     buf = msg.match[1].trim()
-    usr = msg.message.user["name"]
+    usr = msg.message.user.name
     client.get "#{buf}", (err, reply) ->
       if err
         throw err
@@ -115,7 +122,7 @@ module.exports = (robot) ->
         throw err
       else if reply
         result = JSON.parse(reply)
-        for value in result["key"]
+        for value in result.key
           client.del "#{value}", (err) ->
             if err
               throw err
