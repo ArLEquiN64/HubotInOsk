@@ -15,7 +15,8 @@
     "hubot-scripts": "^2.5.16",
     "hubot-youtube": "^0.1.2",
     "hubot-slack": "^3.3.0",
-    "redis": "^0.12.1"
+    "redis": "^0.12.1",
+    "bcrypt": "^0.8.3"
   },
   "engines": {
     "node": "0.10.x"
