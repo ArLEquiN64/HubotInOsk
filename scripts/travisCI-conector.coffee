@@ -10,6 +10,7 @@ module.exports = (robot) ->
     {payload} = req.body
     {status_message, build_url, message, number, repository} = JSON.parse payload
     robot.sent envelope, """
+    TravisCI
     Build##{number} for #{repository.owner_name}/#{repository.name} #{if status_message is 'Pending' then 'started.' else "finished. (#{status_message})"}
     > #{message}
     #{build_url}
