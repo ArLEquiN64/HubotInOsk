@@ -89,28 +89,28 @@ class Vote
 
 module.exports = (robot) ->
   vote = new Vote()
-  robot.respond /vote 投票開始 (.*)/i, (msg) ->
+  robot.respond /投票開始 (.*)/i, (msg) ->
     keys = msg.match[1].split(" ")
     vote.voteStart msg.message.user.name, keys, (result) ->
       if result
         return ->
-          msg.send """投票を開始します！
-                      私にDMで \"vote -v <key>\" と話しかけると投票出来ます！
+          msg.send """投票フォームを開始します！
+                      私にDMで \"<key>に投票\" と話しかけると投票出来ます！
                       <key> には、#{msg.match[1]} のいずれかを入れてください！"""
       else
         msg.send "fatal error"
 
-  robot.respond /vote 投票結果/i, (msg) ->
+  robot.respond /投票結果/i, (msg) ->
     vote.voteGet msg.message.user.name, (result, reply = {}) ->
       if result
         bufS = ""
         for key, content of reply.keys
           bufS += "\n#{key} : #{content.value}"
-        msg.send "現在の状態は、#{bufS}です"
+        msg.send "現在の状態は、#{bufS}\nです"
       else
         msg.send "fatal error"
 
-  robot.respond /vote (.*)に投票/i, (msg) ->
+  robot.respond /(.*)に投票/i, (msg) ->
     vKey = msg.match[1].trim()
     vote.voteVote msg.message.user.name, vKey, (result) ->
       if result
@@ -119,10 +119,10 @@ module.exports = (robot) ->
       else
         msg.send "fatal error"
 
-  robot.respond /vote 投票終了/i, (msg) ->
+  robot.respond /投票終了/i, (msg) ->
     vote.voteEnd msg.message.user.name, (result) ->
       if result
         return ->
-          msg.send "投票を終了します！"
+          msg.send "投票フォームを終了します！"
       else
         msg.send "fatal error"
