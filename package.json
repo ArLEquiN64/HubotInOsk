@@ -11,11 +11,11 @@
     "hubot-google-translate": "^0.1.0",
     "hubot-help": "^0.1.1",
     "hubot-maps": "0.0.2",
-    "hubot-redis-brain": "0.0.2",
     "hubot-rules": "^0.1.0",
     "hubot-scripts": "^2.5.16",
     "hubot-youtube": "^0.1.2",
-    "hubot-slack": "^3.3.0"
+    "hubot-slack": "^3.3.0",
+    "redis": "^0.12.1"
   },
   "engines": {
     "node": "0.10.x"
