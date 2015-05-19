@@ -6,7 +6,7 @@
 
 module.exports = (robot) ->
   robot.router.post "/OSKMaster/travisCI/hooks", (req, res) ->
-    envelope = room: "#osk-master-tuning"
+    envelope = room: "osk-master-tuning"
     {payload} = req.body
     {status_message, build_url, message, number, repository} = JSON.parse payload
     robot.sent envelope, """
