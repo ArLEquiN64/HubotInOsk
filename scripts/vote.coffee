@@ -2,10 +2,10 @@
 #   hubot ちゃんに投票の司会をしてもらうよ
 #
 # Commands:
-#   hubot vote 投票開始 <key1> <key2>... - hubot start vote form
-#   hubot vote <key>に投票 - hubot add value in key
-#   hubot vote 投票結果 - hubot show key: value
-#   hubot vote 投票終了 - hubot end vote form
+#   hubot 投票開始 <key1> <key2>... - hubot start vote form
+#   hubot <key>に投票 - hubot add value in key
+#   hubot 投票結果 - hubot show key: value
+#   hubot 投票終了 - hubot end vote form
 #
 # Author:
 #   ArLE
