@@ -16,11 +16,9 @@ module.exports = (robot) ->
     #{build_url}
     """
     if branch == "master" && status_message == "Passed"
-      command = "sh ~/batch/deployHubot.sh"
+      command = "~/batch/deployHubot.sh"
       robot.send envelope, "I'll be back!"
       @exec = require('child_process').exec
       @exec command, (error, stdout, stderr) ->
-        robot.send envelope, error if error?
-        robot.send envelope, stdout if stdout?
-        robot.send envelope, stderr if stderr?
+        
     res.end "OK"
