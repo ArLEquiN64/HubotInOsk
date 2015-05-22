@@ -91,7 +91,7 @@ class Vote
 
 module.exports = (robot) ->
   vote = new Vote()
-  robot.respond /(.*)について投票開始\s?#(.*)\s?項目:\s?(.*)/i, (msg) ->
+  robot.respond /(.*)について投票開始\s#?(.*)\s項目:\s(.*)/i, (msg) ->
     agenda = msg.match[1]
     channel = msg.match[2]
     keys = msg.match[3].split(" ")
