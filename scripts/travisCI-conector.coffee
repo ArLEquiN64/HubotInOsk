@@ -1,10 +1,11 @@
 # Description:
 #   Notifies TravisCI builds
+#   and restart hubot!
 #
 # Author:
 #   ArLE
 
-request = require 'request'
+http = require 'http'
 
 module.exports = (robot) ->
   robot.router.post "/OSKMaster/travisCI/hooks", (req, res) ->
@@ -19,6 +20,6 @@ module.exports = (robot) ->
     """
     if branch == "master" && status_message == "Passed"
       robot.send envelope, "I'll be back!"
-      request 'http://localhost:8124/'
+      http.get "http://localhost:8124"
 
     res.end "OK"
