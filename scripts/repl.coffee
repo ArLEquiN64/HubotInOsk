@@ -72,7 +72,6 @@ class Repl
 module.exports = (robot) ->
   repl = new Repl()
   robot.respond /repl ([^:]*):([^]*)/i, (msg) ->
-    msg.send msg.match[2]
     repl.create msg.message.user.name, msg.match[1], msg.match[2], (obj) ->
       if obj.error
         msg.send obj.error
