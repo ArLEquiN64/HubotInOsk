@@ -1,3 +1,12 @@
+# Description
+#   hubot relp with paiza.io
+#
+# Commands:
+#   hubot relp <language>:<source> - compile `source` with `language` and reply stdout
+#
+# Author:
+#   ArLE
+
 http = require 'http'
 querystring = require 'querystring'
 redis = require 'redis'
@@ -62,13 +71,14 @@ class Repl
 
 module.exports = (robot) ->
   repl = new Repl()
-  robot.respond /repl ([^:]*):([.\n]*)/i, (msg) ->
+  robot.respond /repl ([^:]*):([^]*)/i, (msg) ->
+    msg.send msg.match[2]
     repl.create msg.message.user.name, msg.match[1], msg.match[2], (obj) ->
       if obj.error
         msg.send obj.error
       else
-        msg.send "OK."
-        sl.sleep 2000, ->
+        msg.send "OK. please wait 1 seconds..."
+        sl.sleep 1000, ->
           repl.get msg.message.user.name, (gObj) ->
             if gObj.error
               msg.send gObj.error
@@ -77,4 +87,4 @@ module.exports = (robot) ->
               if gObj.build_result == 'success'
                 msg.send "stdout > ```#{gObj.stdout}```"
               else
-                msg.send "build err > #{gObj.build_strerr}"
+                msg.send "build err > #{gObj.build_stderr}"
