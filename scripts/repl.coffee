@@ -82,8 +82,13 @@ module.exports = (robot) ->
             if gObj.error
               msg.send gObj.error
             else if gObj.status == 'completed'
-              msg.send "build result : #{gObj.build_result}"
-              if gObj.build_result == 'success'
-                msg.send "stdout > ```#{gObj.stdout}```"
+              if gObj.build_result?
+                msg.send "build result : #{gObj.build_result}"
+                if gObj.build_result == 'success'
+                  msg.send "stdout > ```#{gObj.stdout}```"
+                else
+                  msg.send "build err > ```#{gObj.build_stderr}```"
+              else if gObj.result == 'success'
+                msg.send "result : #{gObj.result}\nstdout > ```#{gObj.stdout}```"
               else
-                msg.send "build err > #{gObj.build_stderr}"
+                msg.send "result : #{gObj.result}\nerr > ```#{gObj.stderr}```"
