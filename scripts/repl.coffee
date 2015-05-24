@@ -57,15 +57,7 @@ class Repl
             body += chunk
           res.on 'end', ->
             body = JSON.parse body
-            if body.error
-              func body
-            else if body.status == 'completed'
-              redCli.del "repl-#{usr}", (err, reply) ->
-                if err
-                  throw err
-              func body
-            else
-              func body
+            func body
       else
         func {error: "fatal error"}
 
