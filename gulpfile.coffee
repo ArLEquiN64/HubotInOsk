@@ -48,7 +48,6 @@ gulp.task 'compile', ['lint'], ->
       .pipe $.espower()
       .pipe gulp.dest('./compile/test')
   )
-  undefined
 
 gulp.task 'istanbul', ['clean:coverage', 'compile'], (cb) ->
   gulp.src ['./compile/src/**/*.js']
@@ -60,7 +59,7 @@ gulp.task 'istanbul', ['clean:coverage', 'compile'], (cb) ->
         .pipe $.mocha()
         #Creating the reports after tests runned
         .pipe $.istanbul.writeReports()
-        .on 'finish', ->
+        .on 'end', ->
           process.chdir __dirname
           cb()
   undefined
@@ -69,4 +68,4 @@ gulp.task 'watch', ['test'], ->
   gulp.watch paths.watch, ['test']
 
 gulp.task 'default', ['test']
-gulp.task 'test', ['lint', 'istanbul']
+gulp.task 'test', ['istanbul']
