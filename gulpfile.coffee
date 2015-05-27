@@ -52,7 +52,8 @@ gulp.task 'compile', ['lint'], ->
 gulp.task 'istanbul', ['clean:coverage', 'compile'], (cb) ->
   gulp.src ['./compile/src/**/*.js']
     #Covering files
-    .pipe $.istanbul()
+    .pipe $.istanbul({includeUntested: true})
+    .pipe $.istanbul.hookRequire()
     .on 'finish', ->
       gulp.src ['./compile/test/**/*.js'], {cwd: __dirname}
         .pipe $.if(!boolifyString(process.env.CI), $.plumber())
