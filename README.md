@@ -215,8 +215,8 @@ you're having issues.
 
 [travis-url]: https://travis-ci.org/ArLEquiN64/HubotInOsk
 [travis-image]: https://travis-ci.org/ArLEquiN64/HubotInOsk.svg?branch=master
-[coveralls-url]: https://coveralls.io/r/ArLEquiN64/HubotInOsk
-[coveralls-image]: https://coveralls.io/repos/ArLEquiN64/HubotInOsk/badge.svg
+[coveralls-url]: https://coveralls.io/r/ArLEquiN64/HubotInOsk?branch=master
+[coveralls-image]: https://coveralls.io/repos/ArLEquiN64/HubotInOsk/badge.svg?branch=master
 [daviddm-url]: https://david-dm.org/ArLEquiN64/HubotInOsk/#info
 [daviddm-image]: https://david-dm.org/ArLEquiN64/HubotInOsk.svg
 [daviddm-dev-url]: https://david-dm.org/ArLEquiN64/HubotInOsk/#info=devDependencies
