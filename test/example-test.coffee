@@ -1,25 +1,14 @@
-assert = require 'power-assert'
-sinon = require 'sinon'
-Robot = require 'hubot/src/robot'
+require './helper'
 TextMessage = require('hubot/src/message').TextMessage
 
 describe 'example', ->
-  robot = null
-  user = null
-  adapter = null
+  {robot, user, adapter} = {}
 
-  beforeEach (done) ->
-    robot = new Robot null, 'mock-adapter', false, 'hubot'
-    robot.adapter.on 'connected', ->
-      require('../src/example')(robot)
-      user = robot.brain.userForId '1',
-        name: 'mocha'
-        room: '#mocha'
-      adapter = robot.adapter
-      done()
-    robot.run()
+  shared_context.robot_is_running (ret) ->
+    {robot, user, adapter} = ret
 
-  afterEach -> robot.shutdown()
+  beforeEach ->
+    require('../src/example')(robot)
 
   it 'hear "Badger"', (done) ->
     done()

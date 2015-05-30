@@ -1,31 +1,20 @@
-assert = require 'power-assert'
-sinon = require 'sinon'
-Robot = require 'hubot/src/robot'
+require './helper'
 TextMessage = require('hubot/src/message').TextMessage
 
 describe 'HelloHubot', ->
-  robot = null
-  user = null
-  adapter = null
+  {robot, user, adapter} = {}
 
-  beforeEach (done) ->
-    robot = new Robot null, 'mock-adapter', false, 'hubot'
-    robot.adapter.on 'connected', ->
-      require('../src/HelloHubot')(robot)
-      user = robot.brain.userForId '1',
-        name: 'mocha'
-        room: '#mocha'
-      adapter = robot.adapter
-      done()
-    robot.run()
+  shared_context.robot_is_running (ret) ->
+    {robot, user, adapter} = ret
 
-  afterEach -> robot.shutdown()
+  beforeEach ->
+    require('../src/HelloHubot')(robot)
 
   it 'hear "hello"', (done) ->
     adapter.on 'reply', (envelope, strings) ->
       assert.equal envelope.user.name, 'mocha'
       assert.equal strings[0], "hello!!"
-      done()
+    , done
 
     adapter.receive new TextMessage user, 'hello'
 
@@ -33,7 +22,7 @@ describe 'HelloHubot', ->
     adapter.on 'reply', (envelope, strings) ->
       assert.equal envelope.user.name, 'mocha'
       assert.equal strings[0], "sure!"
-      done()
+    , done
 
     adapter.receive new TextMessage user, 'hubot thanks'
 
@@ -41,6 +30,6 @@ describe 'HelloHubot', ->
     adapter.on 'reply', (envelope, strings) ->
       assert.equal envelope.user.name, 'mocha'
       assert.equal strings[0], "I am hubot"
-      done()
+    , done
 
     adapter.receive new TextMessage user, 'hubot Who are you'
