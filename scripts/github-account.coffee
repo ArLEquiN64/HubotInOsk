@@ -57,6 +57,6 @@ module.exports = (robot) ->
     gAH.getPeple (obj) ->
       msg.send obj
 
-  robot.respond /add account (.*) (.*)/i, (msg) ->
+  robot.respond /add account ([^ ]+) ([^ ]+) */i, (msg) ->
     gAH.addAccount msg.message.user.name, msg.match[1], msg.match[2], (obj) ->
       msg.send "Success"
