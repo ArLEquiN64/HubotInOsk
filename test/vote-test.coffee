@@ -1,5 +1,7 @@
 require './helper'
 TextMessage = require('hubot/src/message').TextMessage
+client = require 'redis'
+          .createClient()
 
 describe 'vote', ->
   {robot, user, adapter} = {}
@@ -11,6 +13,16 @@ describe 'vote', ->
     require('../src/vote')(robot)
 
   it 'hear "vote start"', (done) ->
+    client.set "vote", JSON.stringify(
+      start: false
+      owner: ""
+      channel: ""
+      keys: {}
+      peoples: {}
+    ), (err, Keys_repliys) ->
+      if err
+        throw err
+    
     adapter.on 'send', (envelope, strings) ->
       assert.equal envelope.room, '#TestRoom'
       assert.equal strings[0], """
