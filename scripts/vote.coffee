@@ -2,9 +2,9 @@
 #   hubot ちゃんに投票の司会をしてもらうよ
 #
 # Commands:
-#   hubot 投票開始 <key1> <key2>... - hubot start vote form
-#   hubot <key>に投票 - hubot add value in key
-#   hubot 投票結果 - hubot show key: value
+#   hubot <agenda>について投票開始 #<channnel> <key1> <key2>... - hubot start vote form
+#   hubot <key>に投票 - hubot add `value` in `key`
+#   hubot 投票結果 - hubot show `key`: `value`
 #   hubot 投票終了 - hubot end vote form
 #
 # Author:
@@ -16,6 +16,7 @@ class Vote
   voteJson = {
     start: false
     owner: ""
+    channnel: ""
     keys: {}
     peoples: {}
   }
@@ -40,13 +41,14 @@ class Vote
       else
         func()
 
-  voteStart: (usr, keys, func) ->
+  voteStart: (usr, channnel, keys, func) ->
     getVote((reply) ->
       if reply.start
         func false
       else
         reply.start = true
         reply.owner = usr
+        reply.channnel = "##{channnel}"
         for key in keys
           reply.keys[key] = keyJsonTemp
         setVote reply, func(true)
@@ -57,7 +59,7 @@ class Vote
   voteEnd: (usr, func) ->
     getVote((reply) ->
       if reply.start && (reply.owner == usr)
-        setVote voteJson, func(true)
+        setVote voteJson, func(true, reply.channnel)
       else
         func false
     , ->
@@ -76,7 +78,7 @@ class Vote
 
   voteVote: (usr, vKey, func) ->
     getVote((reply) ->
-      if reply.start && !reply.peoples[usr]
+      if reply.start && !reply.peoples[usr] && reply.keys[vKey]
         reply.peoples[usr] = true
         reply.keys[vKey].value++
         setVote reply, func(true)
@@ -89,14 +91,18 @@ class Vote
 
 module.exports = (robot) ->
   vote = new Vote()
-  robot.respond /投票開始 (.*)/i, (msg) ->
-    keys = msg.match[1].split(" ")
-    vote.voteStart msg.message.user.name, keys, (result) ->
+  robot.respond /(.*)について投票開始\s#?(.*)\s項目:\s(.*)/i, (msg) ->
+    agenda = msg.match[1]
+    channel = msg.match[2]
+    keys = msg.match[3].split(" ")
+    vote.voteStart msg.message.user.name, channel, keys, (result) ->
       if result
         return ->
-          msg.send """投票フォームを開始します！
-                      私にDMで \"<key>に投票\" と話しかけると投票出来ます！
-                      <key> には、#{msg.match[1]} のいずれかを入れてください！"""
+          robot.send {room:"##{channel}"}, """
+          #{agenda}についてのアンケートを開始します！
+          私にDMで \`\`\`<key>に投票\`\`\` と話しかけると投票出来ます！
+          \`<key>\` には、#{" \`#{key}\` " for key in keys} のいずれかを入れてください！
+          """
       else
         msg.send "fatal error"
 
@@ -105,7 +111,7 @@ module.exports = (robot) ->
       if result
         bufS = ""
         for key, content of reply.keys
-          bufS += "\n#{key} : #{content.value}"
+          bufS += "\n> #{key} : #{content.value}"
         msg.send "現在の状態は、#{bufS}\nです"
       else
         msg.send "fatal error"
@@ -115,14 +121,14 @@ module.exports = (robot) ->
     vote.voteVote msg.message.user.name, vKey, (result) ->
       if result
         return ->
-          msg.send "#{vKey}に投票しました！"
+          msg.send "\`#{vKey}\` に投票しました！"
       else
         msg.send "fatal error"
 
   robot.respond /投票終了/i, (msg) ->
-    vote.voteEnd msg.message.user.name, (result) ->
+    vote.voteEnd msg.message.user.name, (result, channel) ->
       if result
         return ->
-          msg.send "投票フォームを終了します！"
+          robot.send {room:channel}, "アンケートを終了します。ご協力ありがとうございました！"
       else
         msg.send "fatal error"
