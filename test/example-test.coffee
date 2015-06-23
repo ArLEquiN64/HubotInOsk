@@ -13,8 +13,8 @@ describe 'example', ->
   it 'hear "Badger"', (done) ->
     done()
     ###
-    adapter.on 'reply', (enveloop, strings) ->
-      assert.equal enveloop.user.name, 'mocha'
+    adapter.on 'reply', (envelope, strings) ->
+      assert.equal envelope.user.name, 'mocha'
       assert.equal strings[0], "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
       done()
 
