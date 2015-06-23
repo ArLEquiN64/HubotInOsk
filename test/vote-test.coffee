@@ -1,34 +1,55 @@
-assert = require 'power-assert'
-sinon = require 'sinon'
-Robot = require 'hubot/src/robot'
+require './helper'
 TextMessage = require('hubot/src/message').TextMessage
 
 describe 'vote', ->
-  robot = null
-  user = null
-  adapter = null
+  {robot, user, adapter} = {}
 
-  beforeEach (done) ->
-    robot = new Robot null, 'mock-adapter', false, 'hubot'
-    robot.adapter.on 'connected', ->
-      require('../src/vote')(robot)
-      user = robot.brain.userForId '1',
-        name: 'mocha'
-        room: '#mocha'
-      adapter = robot.adapter
-      done()
-    robot.run()
+  shared_context.robot_is_running (ret) ->
+    {robot, user, adapter} = ret
 
-  afterEach -> robot.shutdown()
+  beforeEach ->
+    require('../src/vote')(robot)
 
-  it 'reply "投票開始"', (done) ->
-    adapter.on 'reply', (envelope, strings) ->
-      assert.equal envelope.room, '#mocha'
+  it 'hear "vote start"', (done) ->
+    adapter.on 'send', (envelope, strings) ->
+      assert.equal envelope.room, '#TestRoom'
       assert.equal strings[0], """
-      TESTについてのアンケートを開始します！
-      私にDMで \`\`\`<key>に投票\`\`\` と話しかけると投票出来ます！
-      \`<key>\` には、\`test1\`,\`test2\`,\`test3\` のいずれかを入れてください！
+        Testについてのアンケートを開始します！
+        私にDMで \`\`\`<key>に投票\`\`\` と話しかけると投票出来ます！
+        \`<key>\` には、 \`test1\` , \`test2\` , \`test3\`  のいずれかを入れてください！
       """
       done()
 
-    adapter.receive new TextMessage user, 'TESTについて投票開始 #mocha 項目: test1 test2 test3'
+    adapter.receive new TextMessage user, 'hubot Testについて投票開始 #TestRoom 項目: test1 test2 test3'
+
+  it 'hear "vote to test2"', (done) ->
+    adapter.on 'reply', (envelope, strings) ->
+      assert.equal envelope.room, '#mocha'
+      assert.equal envelope.user.name, 'mocha'
+      assert.equal strings[0], "\`test2\` に投票しました！"
+      done()
+
+    adapter.receive new TextMessage user, 'hubot test2に投票'
+
+  it 'hear "vote status"', (done) ->
+    adapter.on 'reply', (envelope, strings) ->
+      assert.equal envelope.room, '#mocha'
+      assert.equal envelope.user.name, 'mocha'
+      assert.equal strings[0], """
+        現在の状態は、
+        > test1 : 0
+        > test2 : 1
+        > test3 : 0
+        です
+      """
+      done()
+
+    adapter.receive new TextMessage user, 'hubot 投票結果'
+
+  it 'hear "vote end"', (done) ->
+    adapter.on 'send', (envelope, strings) ->
+      assert.equal envelope.room, '#TestRoom'
+      assert.equal strings[0], "アンケートを終了します。ご協力ありがとうございました！"
+      done()
+
+    adapter.receive new TextMessage user, 'hubot 投票終了'

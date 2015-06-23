@@ -16,7 +16,7 @@ class Vote
   voteJson = {
     start: false
     owner: ""
-    channnel: ""
+    channel: ""
     keys: {}
     peoples: {}
   }
@@ -112,7 +112,7 @@ module.exports = (robot) ->
         bufS = ""
         for key, content of reply.keys
           bufS += "\n> #{key} : #{content.value}"
-        msg.send "現在の状態は、#{bufS}\nです"
+        msg.reply "現在の状態は、#{bufS}\nです"
       else
         msg.send "fatal error"
 
@@ -121,7 +121,7 @@ module.exports = (robot) ->
     vote.voteVote msg.message.user.name, vKey, (result) ->
       if result
         return ->
-          msg.send "\`#{vKey}\` に投票しました！"
+          msg.reply "\`#{vKey}\` に投票しました！"
       else
         msg.send "fatal error"
 
